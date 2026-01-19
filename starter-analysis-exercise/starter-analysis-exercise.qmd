@@ -1,5 +1,193 @@
 ---
-title: "Future Exercise"
+title: "Data Analysis Introduction Austin Hill"
 ---
 
-Placeholder file for a future exercise.
+# Installing package
+
+```{r}
+install.packages("dslabs")
+```
+
+# load dslabs package
+
+```{r}
+library("dslabs")
+```
+
+# Taking a look at data
+
+```{r}
+str(gapminder)
+#Summary of data
+summary(gapminder)
+# determine the type of object gapminder is
+class(gapminder)
+```
+
+# Install tidyverse package
+
+```{r}
+install.packages("tidyverse")
+```
+
+# Adding the dplyr that is part of tidyverse
+
+```{r}
+library (dplyr)
+```
+
+# This code creates a new dataset called africadata that contains all rows from gapminder where the continent is Africa, keeping all columns.
+
+```{r}
+africadata <- gapminder %>%
+  filter(continent == "Africa")
+```
+
+# To test if previous code worked
+
+```{r}
+# look at data
+str(africadata)
+#Summary of data
+summary(africadata)
+```
+
+# To create two new objects/variables that contain infant_mortality and life_expectancy and one that contains only population and life_expectancy from africa data.
+
+```{r}
+# Only infant_mortality and life_expectancy
+Africa_infant_life <- africadata %>% select(infant_mortality, life_expectancy)
+# Only population and life_expectancy
+Africa_pop_life <- africadata %>% select(population, life_expectancy)
+```
+
+# To test if previous code worked
+
+```{r}
+# look at data
+str(Africa_infant_life)
+str(Africa_pop_life)
+```
+
+```{r}
+#Summary of data
+summary(Africa_infant_life)
+```
+
+```{r}
+#Summary of data
+summary(Africa_pop_life)
+```
+
+# Loading ggplot2 for plotting
+
+```{r}
+library (ggplot2)
+```
+
+# Infant Mortality vs life Expectancy plot
+
+```{r}
+ggplot(Africa_infant_life, aes(x = infant_mortality, y = life_expectancy)) +
+  geom_point(color = "blue", size = 2) +
+  labs(
+    x = "Infant Mortality",
+    y = "Life Expectancy",
+    title = "Life Expectancy vs Infant Mortality"
+  ) +
+  theme_minimal()
+```
+
+# Life expectancy vs population (log-scaled x-axis) plot
+
+```{r}
+ggplot(Africa_pop_life, aes(x = population, y = life_expectancy)) +
+  geom_point(color = "darkgreen", size = 2) +
+  scale_x_log10() +  # log-scale for x-axis
+  labs(
+    x = "Population (log scale)",
+    y = "Life Expectancy",
+    title = "Life Expectancy vs Population"
+  ) +
+  theme_minimal()
+```
+
+# The plot life expectancy vs population that has multiple overlapping sets seems to be from multiple differnt years of data collection.
+
+# Get the unique years with missing infant_mortality data
+
+```{r}
+Africainfant_missing_years <- africadata %>%
+  filter(is.na(infant_mortality)) %>%  # keep rows with missing infant_mortality
+  distinct(year) %>%                    # get unique years
+  arrange(year)                         #sort the years
+
+Africainfant_missing_years
+```
+
+# Extracting 2000's data from africadata.
+
+```{r}
+africa_2000 <- africadata %>%
+  filter(year == 2000)
+```
+
+# Checking africa_2000
+
+```{r}
+str(africa_2000)
+summary(africa_2000)
+```
+
+# plot for africa 2000 life expectancy vs population
+
+```{r}
+ggplot(africa_2000, aes(x = population, y = life_expectancy)) +
+  geom_point(color = "darkgreen", size = 2) +
+  scale_x_log10() +  # log-scale for x-axis
+  labs(
+    x = "Population (log scale)",
+    y = "Life Expectancy",
+    title = "Life Expectancy vs Population"
+  ) +
+  theme_minimal()
+```
+
+# plot for africa 2000 Infant Mortality vs life Expectancy
+
+```{r}
+ggplot(africa_2000, aes(x = infant_mortality, y = life_expectancy)) +
+  geom_point(color = "blue", size = 2) +
+  labs(
+    x = "Infant Mortality",
+    y = "Life Expectancy",
+    title = "Life Expectancy vs Infant Mortality"
+  ) +
+  theme_minimal()
+```
+
+# Running linear regression on life expectancy and infant mortality plot
+
+```{r}
+# Fit a linear model: life_expectancy ~ infant_mortality
+fit1 <- lm(life_expectancy ~ infant_mortality, data = africa_2000)
+
+# Print a summary of the model
+summary(fit1)
+```
+
+# This linear regression shows that there is a strong negative relationship between infant mortality and life expectancy among African countries in 2000.Higher infant mortality tend to have lower life expectancy, and this relationship is statistically significant.
+
+# Running linear regression on life expectancy vs population plot
+
+```{r}
+# Fit a linear model: life_expectancy ~ population
+fit2 <- lm(life_expectancy ~ population, data = africa_2000)
+
+# Print a summary of the model
+summary(fit2)
+```
+
+# Unlike infant mortality, population size is not a good predictor of life expectancy for African countries in 2000. Any apparent trend is likely just random variation.
+
+# AI was used to help with coding areas I was less familar with.

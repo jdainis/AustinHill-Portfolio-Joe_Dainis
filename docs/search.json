@@ -2,9 +2,9 @@
   {
     "objectID": "starter-analysis-exercise/starter-analysis-exercise.html",
     "href": "starter-analysis-exercise/starter-analysis-exercise.html",
-    "title": "Future Exercise",
+    "title": "Data Analysis Introduction Austin Hill",
     "section": "",
-    "text": "Placeholder file for a future exercise."
+    "text": "Placeholder file for a future exercise. # Loading in dslabs package Library(“dslabs”)"
   },
   {
     "objectID": "aboutme.html",
