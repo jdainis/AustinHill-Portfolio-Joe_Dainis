@@ -187,3 +187,83 @@ summary(fit2)
 # Unlike infant mortality, population size is not a good predictor of life expectancy for African countries in 2000. Any apparent trend is likely just random variation.
 
 # AI was used to help with coding I was less familar with.
+
+# This section below was contributed by Joe Dainis! Hi
+```{r}
+#Install and download dslabs package
+#install.packages("dslabs")
+library("dslabs")
+
+#See overview of mouse weights data
+str(mice_weights)
+
+#Get summary of the mouse weights data
+summary(mice_weights)
+
+#Install and load dplyr package
+#install.packages("dplyr")
+library("dplyr")
+
+#Assign female mice to femalemice and then overview their data
+femalemice = subset(mice_weights, sex == "F")
+str(femalemice)
+summary(femalemice)
+
+#Assign male mice to malemice and then overview their data
+malemice = subset(mice_weights, sex == "M")
+str(malemice)
+summary(malemice)
+
+#Select Diet and percent_fat for male and female subset groups
+femaledietfat = select(femalemice, c('percent_fat', 'diet', 'body_weight'))
+maledietfat = select(malemice, c('percent_fat', 'diet', 'body_weight'))
+
+#See overview and summarize percent fat and diet for male versus female mice
+str(femaledietfat)
+summary(femaledietfat)
+str(maledietfat)
+summary(maledietfat)
+
+#Make a plot comparing percent fat in the different diets for male or female mice
+##Install ggplot2 to make plots
+#install.packages("ggplot2")
+library(ggplot2)
+
+#Generate plot for female mice looking at diet influence on body weight
+ggplot(data = femaledietfat, aes(x = diet, y = body_weight, color = diet)) + geom_violin() + stat_summary(fun.y=mean, geom="point", color="pink", size=4) + labs(title="Influence of Diet on Body Weight in Female Outbred Mice", x = "mouse diet", y = "body weight at 19 weeks of age")
+
+#Generate plot for male mice looking at diet influence on body weight
+ggplot(data = maledietfat, aes(x = diet, y = body_weight, color = diet)) + geom_violin() + stat_summary(fun.y=mean, geom="point", color="blue", size=4) + labs(title="Influence of Diet on Body Weight in Male Outbred Mice", x = "mouse diet", y = "body weight at 19 weeks of age")
+
+#Generate plot for female mice looking at diet influence on fat percent
+ggplot(data = femaledietfat, aes(x = diet, y = percent_fat, color = diet)) + geom_violin() + stat_summary(fun.y=mean, geom="point", color="pink", size=4) + labs(title="Influence of Diet on Fat Percentage in Female Outbred Mice", x = "mouse diet", y = "percent fat")
+
+#Generate plot for male mice looking at diet influence on fat percent
+ggplot(data = maledietfat, aes(x = diet, y = percent_fat, color = diet)) + geom_violin() + stat_summary(fun.y=mean, geom="point", color="blue", size=4) + labs(title="Influence of Diet on Fat Percentage in Male Outbred Mice", x = "mouse diet", y = "percent fat")
+
+#Fit a logistic model for diet as a predictor of body weight and fat percentage
+##Convert rank to a factor for the numeric diet for female and male
+femaledietfat$diet <- factor(femaledietfat$diet)
+femaledietfat$diet <- as.numeric(femaledietfat$diet)
+femaledietfat <- femaledietfat %>%
+  mutate(binarydiet = diet - 1)
+
+maledietfat$diet <- factor(maledietfat$diet)
+maledietfat$diet <- as.numeric(maledietfat$diet)
+maledietfat <- maledietfat %>%
+  mutate(binarydiet = diet - 1)
+##Fit the logistic regression model
+mylogitfembody <- glm(binarydiet ~ body_weight, data=femaledietfat, family = "binomial")
+summary(mylogitfembody)
+
+mylogitfemfat <- glm(binarydiet ~ percent_fat, data=femaledietfat, family = "binomial")
+summary(mylogitfemfat)
+
+mylogitmalebody <- glm(binarydiet ~ body_weight, data=maledietfat, family = "binomial")
+summary(mylogitmalebody)
+
+mylogitmalefat <- glm(binarydiet ~ percent_fat, data=maledietfat, family = "binomial")
+summary(mylogitmalefat)
+
+#In summary, we found that diet appears to have an influence in both male and female mice, with a high fat diet leading to a higher body weight at 19 weeks of age and a higher fat percentage. We also found that body weight and fat percentage of the mice can be a predictor of the diet that the mice was on.
+```
