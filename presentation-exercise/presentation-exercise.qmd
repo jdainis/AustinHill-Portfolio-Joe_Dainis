@@ -24,12 +24,12 @@ library(scales)
 library(readr)
 library(patchwork)
 library(cowplot)
+library(here)
 ```
 
 ```{r}
 # Load and Inspect Data
-names_df <- read_csv("presentation-exercise/unisex_names_table.csv")
-
+names_df <-read_csv(here("presentation-exercise", "unisex_names_table.csv"))
 glimpse(names_df)
 ```
 
@@ -204,7 +204,7 @@ ggsave(
 
 ```{r}
 # Save PNG file to presentation-exercise folder 
-ggsave("presentation-exercise/unisex_plot.png", final_plot)
+ggsave(here::here("presentation-exercise", "unisex_plot.png"), final_plot)
 ```
 
 # Summary of recreating the graph 
@@ -218,7 +218,8 @@ ChatGPT Prompt:I want you to use the same data you used for the graph and create
 library(tidyverse)
 library(gt)
 
-names_df <- read_csv("presentation-exercise/unisex_names_table.csv", show_col_types = FALSE) %>%
+names_df <- read_csv(here::here("presentation-exercise", "unisex_names_table.csv"),
+                     show_col_types = FALSE) %>%
   rename(rank = `...1`)
 ```
 
